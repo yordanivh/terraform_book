@@ -2,22 +2,25 @@ provider "aws" {
   region = "us-east-2"
 }
 
-terraform {
-
-  backend "s3" {
-    key = "global/s3/terraform.tfstate"
-
-  }
-}
+#terraform {
+#
+ # backend "s3" {
+  #  key = "global/s3/terraform.tfstate"
+   # bucket = "terraform-book-bucket"
+    #region = "us-east-2"
+    #dynamodb_table = "terraform-up-and-running-locks"
+    #encrypt        = true
+  #}
+#}
 
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "terraform-book-bucket"
 
   #Prevent accidental deletion of this S3 bucket
-  lifecycle {
-    prevent_destroy = true
-  }
+  ##lifecycle {
+    #prevent_destroy = true
+  #}
 
   #Enable versioning so we can see the full version history of our
   #state files

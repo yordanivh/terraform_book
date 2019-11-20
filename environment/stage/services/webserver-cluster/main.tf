@@ -9,17 +9,44 @@ data "aws_vpc" "default" {
 data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.default.id
 }
+
+#data "terraform_remote_state" "db" {
+#  backend = "s3"
+#
+ # config = {
+  #  bucket = "terraform-book-bucket"
+   # key= "stage/data-stores/mysql/terraform.tfstate"
+    #region = "us-east-2"
+  #}
+#}
+
+#data "template_file" "user_data"  {
+ # template = file("user-data.sh")
+
+  #vars = {
+   # server_port = var.server_port
+   # db_address = data.terraform_remote_state.db.outputs.address
+    #db_port = data.terraform_remote_state.db.outputs.port
+  #}
+#}
+
+#terraform {
+
+ # backend "s3" {
+  #  key = "stage/services/webserver-cluster/terraform.tfstate"
+   # bucket = "terraform-book-bucket"
+    #region = "us-east-2"
+    #dynamodb_table = "terraform-up-and-running-locks"
+    #encrypt        = true
+  #}
+#}
 #configuration of each instance that is created with ASG
 resource "aws_launch_configuration" "example" {
   image_id        = "ami-0d5d9d301c853a04a"
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.instance.id]
 
-  user_data = <<-EOF
-		#!bin/bash
-		echo "Hello Alvaro" > index.html
-		nohup busybox httpd -f -p ${var.server_port} &
-		EOF
+  #user_data = data.template_file.user_data.rendered
 
   lifecycle {
     create_before_destroy = true
@@ -132,15 +159,4 @@ resource "aws_lb_target_group" "asg" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
-}
-
-variable "server_port" {
-  description = "The port the server will use for HTTP requests"
-  type        = number
-  default     = 8080
-}
-
-output "alb_dns_name" {
-  value       = aws_lb.example.dns_name
-  description = "The domain name of the load balancer"
 }

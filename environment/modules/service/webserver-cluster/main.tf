@@ -6,7 +6,7 @@ data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.default.id
 }
 
-data "terraform_remote_state" "db" {
+ data "terraform_remote_state" "db" {
   backend = "s3"
 
   config = {
@@ -14,7 +14,7 @@ data "terraform_remote_state" "db" {
     key    = var.db_remote_state_key
     region = "us-east-2"
   }
-}
+} 
 
 data "template_file" "user_data" {
   template = file("${path.module}/user-data.sh")
@@ -35,7 +35,7 @@ terraform {
     dynamodb_table = "terraform-up-and-running-locks"
     encrypt        = true
   }
-}
+} 
 #configuration of each instance that is created with ASG
 resource "aws_launch_configuration" "example" {
   image_id        = "ami-0d5d9d301c853a04a"
